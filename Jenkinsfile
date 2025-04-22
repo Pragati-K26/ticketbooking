@@ -1,25 +1,50 @@
 pipeline {
     agent any
 
+    environment {
+        COMPOSE_FILE = 'docker-compose.yml'
+    }
+
     stages {
         stage('Clone') {
             steps {
-                git 'https://github.com/Pragati-K26/ticketbooking.git'
+                git branch: 'main', url: 'https://github.com/Pragati-K26/ticketbooking.git'
             }
         }
+
         stage('Build') {
             steps {
-                sh 'docker-compose build'
+                script {
+                    if (isUnix()) {
+                        sh 'docker-compose build'
+                    } else {
+                        bat 'docker-compose build'
+                    }
+                }
             }
         }
+
         stage('Test') {
             steps {
-                sh 'docker-compose run web python manage.py test'
+                script {
+                    if (isUnix()) {
+                        sh 'docker-compose run web python manage.py test'
+                    } else {
+                        bat 'docker-compose run web python manage.py test'
+                    }
+                }
             }
         }
+
         stage('Deploy') {
             steps {
-                sh 'docker-compose up -d'
+                script {
+                    if (isUnix()) {
+                        sh 'docker-compose up -d'
+                    } else {
+                        bat 'docker-compose up -d'
+                    }
+                }
             }
         }
     }
