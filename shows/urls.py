@@ -1,8 +1,8 @@
 from django.urls import path
-from .views import show_list, book_ticket, booking_history
+from .views import ShowListView, BookTicketView, BookingHistoryView
 
 urlpatterns = [
-    path('', show_list, name='show_list'),
-    path('book/<int:show_id>/', book_ticket, name='book_ticket'),
-    path('history/', booking_history, name='booking_history'),
+    path('', ShowListView.as_view(), name='show_list'),
+    path('book/<int:pk>/', BookTicketView.as_view(), name='book_ticket'),  # Using 'pk' as the primary key
+    path('history/', BookingHistoryView.as_view(), name='booking_history'),
 ]

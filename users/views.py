@@ -1,28 +1,26 @@
-from django.contrib.auth import login, logout, authenticate
+from django.contrib.auth import login, logout
 from django.contrib.auth.forms import UserCreationForm, AuthenticationForm
+from django.urls import reverse_lazy
+from django.views.generic import CreateView
+from django.contrib.auth.views import LoginView, LogoutView
 from django.shortcuts import render, redirect
 
-def register_view(request):
-    if request.method == 'POST':
-        form = UserCreationForm(request.POST)
-        if form.is_valid():
-            form.save()
-            return redirect('login')
-    else:
-        form = UserCreationForm()
-    return render(request, 'register.html', {'form': form})
+# Register View - CBV
+class RegisterView(CreateView):
+    form_class = UserCreationForm
+    template_name = 'register.html'
+    success_url = reverse_lazy('login')
 
-def login_view(request):
-    if request.method == 'POST':
-        form = AuthenticationForm(request, data=request.POST)
-        if form.is_valid():
-            login(request, form.get_user())
-            return redirect('show_list')
-    else:
-        form = AuthenticationForm()
-    return render(request, 'login.html', {'form': form})
+    def form_valid(self, form):
+        user = form.save()
+        login(self.request, user)  # Automatically log the user in after registration
+        return redirect(self.success_url)
 
-def logout_view(request):
-    logout(request)
-    return redirect('login')
+# Custom Login View - CBV
+class CustomLoginView(LoginView):
+    template_name = 'login.html'
+    success_url = reverse_lazy('show_list')  # Redirect to 'show_list' after login
 
+# Custom Logout View - CBV
+class CustomLogoutView(LogoutView):
+    next_page = reverse_lazy('login')  # Redirect to login page after logout

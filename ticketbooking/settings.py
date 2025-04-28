@@ -76,15 +76,10 @@ WSGI_APPLICATION = 'ticketbooking.wsgi.application'
 
 DATABASES = {
     'default': {
-        'ENGINE': 'django.db.backends.postgresql',
-        'NAME': 'ticketdb',
-        'USER': 'ticketuser',
-        'PASSWORD': 'ticketpass',
-        'HOST': 'db',
-        'PORT': 5432,
+        'ENGINE': 'django.db.backends.sqlite3',
+        'NAME': BASE_DIR / 'data' / 'db.sqlite3',
     }
 }
-
 
 
 # Password validation
